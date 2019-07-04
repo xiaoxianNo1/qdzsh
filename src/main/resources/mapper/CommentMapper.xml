@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.9//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rushang.mapper.CommentMapper">
+    <select id="selectPlByXxid" resultType="com.rushang.pojo.MessagePl">
+        select plid,plnr,nrzt,plsj,xxid,yhid,dzcs from message_pl where 1=1
+        <if test="xxid!=null and xxid!=''">
+            and xxid=#{xxid,jdbcType=CHAR}
+        </if>
+        <if test="yhid !=null and yhid !=''">
+            and yhid=#{yhid,jdbcType=CHAR}
+        </if>
+        order by plsj desc
+    </select>
+
+    <select id="selectPlByXxidTotal" resultType="java.lang.Integer">
+        select count(plid) from message_pl where 1=1
+        <if test="xxid!=null and xxid!=''">
+            and xxid=#{xxid,jdbcType=CHAR}
+        </if>
+        <if test="yhid !=null and yhid !=''">
+            and yhid=#{yhid,jdbcType=CHAR}
+        </if>
+    </select>
+
+    <select id="selectPlByXxidPage" resultType="java.util.Map">
+        select pl.plid,pl.plnr,pl.nrzt,pl.plsj,pl.xxid,pl.yhid,pl.dzcs ,u.User_CoolName
+        from message_pl pl ,users u where pl.yhid=u.User_ID
+        <if test="xxid!=null and xxid!=''">
+            and xxid=#{xxid,jdbcType=CHAR}
+        </if>
+        <if test="yhid !=null and yhid !=''">
+            and yhid=#{yhid,jdbcType=CHAR}
+        </if>
+        <if test="zxpx!=null and zxpx!=''">
+            order by plsj desc
+        </if>
+        <if test="zrpx!=null and zrpx !=''">
+            order  by dzcs desc
+        </if>
+         limit #{startTow},#{total}
+    </select>
+
+    <insert id="insertComment" parameterType="java.lang.String">
+        <selectKey keyProperty="plid" resultType="java.lang.String" order="BEFORE">
+            select replace(uuid(),'-','') as id from dual
+        </selectKey>
+        INSERT INTO message_pl (plid, plnr, nrzt, plsj, xxid, yhid, dzcs) VALUES (#{plid,jdbcType=CHAR},#{plnr},'1',#{plsj,jdbcType=TIMESTAMP},#{xxid,jdbcType=CHAR},#{yhid,jdbcType=CHAR},0);
+    </insert>
+
+
+
+
+</mapper>

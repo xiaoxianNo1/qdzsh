@@ -1,0 +1,37 @@
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+<!--		打印sql-->
+		<setting name="logImpl" value="STDOUT_LOGGING"/>
+	</settings>
+
+	<!-- 定义 别名 -->
+	<typeAliases>
+		<!-- 批量别名定义 指定包路径，自动扫描包下边的pojo，定义别名，别名默认为类名（首字母小写或大写） -->
+		<package name="com.rushang.pojo" />
+	</typeAliases>
+	<!-- 配置分页插件 -->
+	<plugins>
+		<plugin interceptor="com.github.pagehelper.PageInterceptor">
+		<!--<plugin interceptor="com.github.pagehelper.PageHelper">-->
+			<!-- 设置数据库类型 Oracle,Mysql,MariaDB,SQLite,Hsqldb,PostgreSQL六种数据库-->
+			<!--<property name="dialect" value="mysql"/>-->
+
+			<property name="offsetAsPageNum" value="true"/>
+			<property name="rowBoundsWithCount" value="true"/>
+			<property name="pageSizeZero" value="true"/>
+			<property name="reasonable" value="false"/>
+			<property name="params" value="pageNum=start;pageSize=limit;"/>
+		</plugin>
+	</plugins>
+
+	<!-- 
+	由于使用spring和mybatis整合的mapper扫描器，这里可以不用配置了
+	<mappers>
+		<package name="com.rushang.mapper" />
+
+
+	</mappers> -->
+
+
+</configuration>

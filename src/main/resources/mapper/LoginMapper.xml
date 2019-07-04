@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.9//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rushang.mapper.LoginMapper">
+<!--    根据用户手机号查询密码-->
+    <select id="selectPwdByTel" resultType="com.rushang.pojo.User">
+        select User_ID, user_pwd from users u where u.user_tel =#{userTel}
+    </select>
+<!--    根据用户邮箱查询密码-->
+    <select id="selectPwdByEmail" resultType="com.rushang.pojo.User">
+        select User_ID, user_pwd from users u where u.user_email = #{userEmail}
+    </select>
+
+</mapper>

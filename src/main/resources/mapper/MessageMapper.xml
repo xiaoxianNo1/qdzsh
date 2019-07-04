@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.9//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rushang.mapper.MessageMapper">
+    <select id="selectMessageByUserId" resultType="java.util.Map">
+        select xxid,xxlx,xxbt,xxnr,fbsj,sccs,plcs,zfcs,ztcs,ydcs,xxfl,xxtpid,fbyhid from messages where yxbz='Y'
+        <if test="xxlx!=null and xxlx !=''">
+            and xxlx=#{xxlx}
+        </if>
+        <if test="userId!=null and userId !=''">
+            and fbyhid=#{UserId}
+        </if>
+
+        <if test="ztcs!=null and ztcs !=''">
+            order by ztcs desc
+        </if>
+        <if test="fbsj!=null and fbsj!=''">
+            order by fbsj desc
+        </if>
+
+    </select>
+
+    <select id="selectMessageTotal" resultType="java.lang.Integer">
+        select count(xxid) from messages where yxbz='Y'
+        <if test="xxlx!=null and xxlx !=''">
+            and xxlx=#{xxlx}
+        </if>
+        <if test="userId!=null and userId !=''">
+            and fbyhid=#{UserId}
+        </if>
+    </select>
+    
+    <select id="selectMessageByPage" resultType="java.util.Map">
+        select m.xxid,m.xxlx,m.xxbt,m.xxnr,m.fbsj,m.sccs,m.plcs,m.zfcs,m.ztcs,m.ydcs,m.xxfl,m.xxtpsl,m.fbyhid,u.User_CoolName,u.User_Photo,ct.tow_towcol,tp.tp_id,tp.tp_nr,tp.tp_mc
+        from messages m,users u ,class_tow ct,(SELECT tp_id ,tp_nr,message_id,tp_mc from message_tp group by message_id) tp
+        where m.fbyhid=u.User_ID
+        and m.xxid=tp.message_id
+        and m.yxbz='Y'
+        and m.xxfl=ct.tow_id
+        <if test="xxfl!=null and xxfl !=''">
+            and m.xxfl=#{xxfl}
+        </if>
+        <if test="xxlx!=null and xxlx !=''">
+            and m.xxlx=#{xxlx}
+        </if>
+        <if test="UserId!=null and UserId !=''">
+            and m.fbyhid=#{UserId}
+        </if>
+
+        <if test="ztcs!=null and ztcs !=''">
+            order by ztcs desc
+        </if>
+        <if test="fbsj!=null and fbsj!=''">
+            order by fbsj desc
+        </if>
+           limit #{startTow},#{total}
+    </select>
+
+    <insert id="insertMessage" parameterType="java.util.Map">
+        INSERT INTO messages (xxid, xxlx, xxbt, xxnr, fbsj, sccs, plcs, zfcs, ztcs, ydcs, xxfl, xxtpsl, fbyhid, yxbz) VALUES
+        (#{xxid,jdbcType=CHAR},#{xxlx,jdbcType=VARCHAR},#{xxbt,jdbcType=VARCHAR},#{xxnr,jdbcType=VARCHAR},#{fbsj,jdbcType=TIMESTAMP},
+        #{sccs,jdbcType=INTEGER},#{plcs,jdbcType=INTEGER},#{zfcs,jdbcType=INTEGER},#{ztcs,jdbcType=INTEGER},#{ydcs,jdbcType=INTEGER},#{xxfl,jdbcType=CHAR},
+        #{xxtpsl,jdbcType=INTEGER},#{fbyhid,jdbcType=CHAR},'Y')
+    </insert>
+
+
+    <update id="updateMessageById" parameterType="java.util.Map">
+        update messages
+        <trim prefix="set" suffixOverrides=",">
+            <if test="sccs!=null and sccs!=''">sccs=#{sccs}</if>
+            <if test="plcs!=null and plcs!=''">plcs=#{plcs}</if>
+            <if test="zfcs!=null and zfcs!=''">zfcs=#{zfcs}</if>
+            <if test="ztcs!=null and ztcs!=''">ztcs=#{ztcs}</if>
+            <if test="ztcs!=null and ztcs!=''">ztcs=#{ztcs}</if>
+        </trim>
+        where xxid=#{xxid,jdbcType=CHAR}
+    </update>
+
+    <select id="selectMessageDetailsByXxid" resultType="java.util.Map">
+        select m.xxid,m.xxlx,m.xxbt,m.xxnr,m.fbsj,m.sccs,m.plcs,m.zfcs,m.ztcs,m.ydcs,m.xxfl,m.xxtpsl,m.fbyhid,u.User_CoolName,u.User_Photo,ct.tow_towcol
+        from messages m,users u ,class_tow ct
+        where m.fbyhid=u.User_ID and m.yxbz='Y'and m.xxfl=ct.tow_id
+        <if test="xxid !=null and xxid !=''">
+            and m.xxid=#{xxid,jdbcType=CHAR}
+        </if>
+    </select>
+
+    <select id="selectOneClass" resultType="java.util.Map">
+        select one_id,one_type from class_one where one_yxbz='Y'
+    </select>
+    <select id="selectTowClass" resultType="java.util.Map">
+        select tow_id,tow_towcol,first_id from class_tow where tow_yxbz='Y'
+        <if test="firstid!=null and firstid!=''">
+            and first_id=#{firstid,jdbcType=CHAR}
+        </if>
+    </select>
+
+    <select id="selectMessageByFlid" resultType="java.util.Map">
+
+    </select>
+
+    <!--更新阅读次数-->
+    <update id="updateYdcs" >
+        UPDATE messages SET ydcs=#{ydcs,jdbcType=INTEGER} where (xxid=#{xxid,jdbcType=CHAR})
+    </update>
+
+    <!--更新点赞次数-->
+    <update id="updateDzcs" >
+        UPDATE messages SET ztcs=#{ztcs,jdbcType=INTEGER} where (xxid=#{xxid,jdbcType=CHAR})
+    </update>
+
+    <!--更新收藏次数-->
+    <update id="updateSccs" >
+        UPDATE messages SET sccs=#{sccs,jdbcType=INTEGER} where (xxid=#{xxid,jdbcType=CHAR})
+    </update>
+
+    <!--根据关注查询消息-->
+    <select id="selectMessageByGz" resultType="java.util.Map">
+
+    </select>
+
+    <!--根据收藏获取信息-->
+    <select id="selectMsgSc" resultType="java.util.Map">
+        select m.xxid,m.xxlx,m.xxbt,m.xxnr,m.fbsj,m.sccs,m.plcs,m.zfcs,m.ztcs,m.ydcs,m.xxfl,m.xxtpsl,m.fbyhid,u.User_CoolName,u.User_Photo,ct.tow_towcol,tp.tp_id,tp.tp_nr,tp.tp_mc ,sc.scid,sc.scyhid,sc.xxid from messages m,users u ,class_tow ct,(SELECT tp_id ,tp_nr,message_id,tp_mc from message_tp group by message_id) tp,message_sc sc where
+        m.fbyhid=u.User_ID
+        and sc.xxid=m.xxid
+        and sc.sczt='1'
+        and sc.scyhid=#{scyhid,jdbcType=CHAR}
+        and m.yxbz='Y'
+        and m.xxfl=ct.tow_id
+        and m.xxid=tp.message_id
+        order by fbsj desc limit #{startTow},#{total}
+    </select>
+
+    <select id="selectMessageBySearch" resultType="java.util.Map">
+        select m.xxid,m.xxlx,m.xxbt,m.xxnr,m.fbsj,m.sccs,m.plcs,m.zfcs,m.ztcs,m.ydcs,m.xxfl,m.xxtpsl,m.fbyhid,u.User_CoolName,u.User_Photo,ct.tow_towcol,tp.tp_id,tp.tp_nr,tp.tp_mc  from messages m,users u ,class_tow ct,(SELECT tp_id ,tp_nr,message_id,tp_mc from message_tp group by message_id) tp where
+        m.fbyhid=u.User_ID
+        and m.yxbz='Y'
+        and m.xxfl=ct.tow_id
+        and m.xxnr like "%"#{xxnr,jdbcType=VARCHAR}"%"
+        and m.xxlx=#{xxlx,jdbcType=VARCHAR}
+        and m.xxid=tp.message_id
+        order by fbsj desc limit #{startTow},#{total}
+    </select>
+
+
+
+
+
+
+</mapper>

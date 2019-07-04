@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.9//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rushang.mapper.CollectionMapper">
+    <select id="selectUserCollection" resultType="com.rushang.pojo.MessageSc">
+        select scid ,scsj,sczt,scyhid,xxid from message_sc where sczt='1'
+        <if test="userId !=null and userId !=''">
+            and scyhid=#{userId}
+        </if>
+    </select>
+
+    <select id="selectUserCollectionTotal" resultType="java.lang.Integer">
+        select count(scid) from message_sc where sczt='1'
+        <if test="userId !=null and userId !=''">
+             and scyhid=#{userId}
+        </if>
+    </select>
+
+    <select id="selectUserCollectionByPage" resultType="java.util.Map">
+        select scid ,scsj,sczt,scyhid,xxid from message_sc where
+         sczt='1'
+         <if test="yhid!=null and yhid!=''">
+             and scyhid=#{yhid,jdbcType=CHAR}
+         </if>
+         <if test="xxid!=null and xxid!=''">
+             and xxid=#{xxid,jdbcType=CHAR}
+         </if>
+          order by scsj desc limit  #{startTow,jdbcType=INTEGER},10
+    </select>
+
+    <insert id="insertUserCollection" parameterType="java.lang.String">
+        <selectKey keyProperty="scid" resultType="java.lang.String" order="BEFORE">
+            select replace(uuid(),'-','') as id from dual
+        </selectKey>
+        insert into message_sc (scid,scsj,sczt,scyhid,xxid) values (#{scid,jdbcType=CHAR},#{scsj,jdbcType=TIMESTAMP},#{sczt,jdbcType=VARCHAR},#{userid,jdbcType=CHAR},#{xxid,jdbcType=CHAR})
+    </insert>
+
+
+
+    <update id="updateUserCollection" parameterType="java.lang.String">
+        UPDATE message_sc SET sczt = #{sczt,jdbcType=VARCHAR} WHERE (scid = #{scid,jdbcType=CHAR});
+    </update>
+</mapper>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.9//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rushang.mapper.RegisterMapper">
+
+<!--    插入一条注册信息-->
+    <insert id="insertRegister"  parameterType="com.rushang.pojo.UserZc">
+        <selectKey keyProperty="user_Id" resultType="java.lang.String" order="BEFORE">
+            select replace(uuid(),'-','') as id from dual
+        </selectKey>
+        insert into user_zc(user_id,user_email,user_pwd,user_coolName,user_status,user_tel,user_sex,user_time) values
+                    (#{user_Id,jdbcType=CHAR},#{userEmail,jdbcType=VARCHAR},#{userPwd,jdbcType=VARCHAR},#{userCoolName,jdbcType=VARCHAR},'1',#{userTel,jdbcType=VARCHAR},#{userSex,jdbcType=VARCHAR},#{date,jdbcType=TIMESTAMP})
+
+    </insert>
+
+    <select id="selectRegisterKey" resultType="java.lang.String">
+        select user_id from user_zc where 1=1
+
+            and user_email=#{userEmail}
+
+            and user_pwd=#{userPwd}
+
+            and user_coolName=#{userCoolName}
+
+            and user_time =#{date,jdbcType=TIMESTAMP}
+
+            and user_status ='1'
+
+            and user_tel=#{userTel}
+
+            and user_sex =#{userSex}
+
+    </select>
+
+<!--    插入一个新用户-->
+    <insert id="insertNewUser" parameterType="com.rushang.pojo.User">
+        insert into users (User_ID,User_CoolName,User_Tel,User_Email,User_Pwd,User_Photo,User_Sex,User_HomeWeb,User_SignInDate,yxbz) values
+                        (#{userId,jdbcType=CHAR},#{userCoolName,jdbcType=VARCHAR},#{userTel,jdbcType=VARCHAR},#{userEmail,jdbcType=VARCHAR},#{userPwd,jdbcType=VARCHAR},#{userPhoto,jdbcType=VARCHAR},#{userSex,jdbcType=VARCHAR},' ',#{User_SignIndate,jdbcType=TIMESTAMP},'Y')
+    </insert>
+
+<!--    根据手机号查询手机号-->
+    <select id="selectTelByTel" resultType="java.lang.String">
+        select distinct user_tel from users u where u.user_tel=#{userTel}
+    </select>
+    
+<!--    根据邮箱查询邮箱-->
+    <select id="selectEmailByEmail" resultType="java.lang.String">
+        select distinct user_email from users u where u.user_email =#{userEmail}
+    </select>
+
+</mapper>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.9//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rushang.mapper.ForgetMapper">
+    <select id="selectPwdByEmail" resultType="java.lang.String">
+        select User_Pwd from users where User_Email=#{email,jdbcType=VARCHAR}
+    </select>
+
+    <insert id="insertForgetEmailLog" parameterType="java.lang.String" >
+        insert into forget_email_log (`user_email`, `user_phone`) values (#{email,jdbcType=VARCHAR},#{user_phone,jdbcType=VARCHAR})
+    </insert>
+
+    <select id="selectPwd" resultType="java.lang.String">
+        select User_Pwd from users where User_Email=#{email,jdbcType=VARCHAR} and User_Tel=#{phone,jdbcType=VARCHAR}
+    </select>
+
+</mapper>

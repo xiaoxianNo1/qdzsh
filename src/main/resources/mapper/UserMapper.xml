@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.9//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rushang.mapper.UserMapper">
+<!--    根据用户id 获取用户信息-->
+    <select id="getUserById" resultType="java.util.Map">
+        SELECT User_Id,User_CoolName,User_Tel,User_Email,User_Photo,User_Sex,User_SignInDate FROM users u
+        where yxbz='Y'
+        <if test="userId!=null and userId!=''">
+            and u.User_ID = #{userId}
+        </if>
+    </select>
+
+    <insert id="insertFollowUser" parameterType="java.lang.String">
+        INSERT INTO user_gx ( gxlx, gxzm, yhid, bgzyhid) VALUES (#{gxlx,jdbcType=VARCHAR},#{gxzm,jdbcType=VARCHAR},#{yhid,jdbcType=CHAR},#{bgzyhid,jdbcType=CHAR})
+    </insert>
+
+    <!--更新用户信息-->
+    <update id="updateUserInfo">
+        UPDATE users
+        <set>
+            <if test="User_CoolName!=null and User_CoolName!=''">
+                User_CoolName=#{User_CoolName,jdbcType=VARCHAR},
+            </if>
+            <if test="User_Tel!=null and User_Tel!=''">
+                User_Tel=#{User_Tel,jdbcType=VARCHAR},
+            </if>
+            <if test="User_Email!=null and User_Email!=''">
+                User_Email=#{User_Email,jdbcType=VARCHAR},
+            </if>
+            <if test="User_Pwd !=null and User_Pwd!=''">
+                User_Pwd=#{User_Pwd,jdbcType=VARCHAR},
+            </if>
+            <if test="User_Photo!=null">
+                User_Photo=#{User_Photo,jdbcType=BLOB},
+            </if>
+            <if test="User_SignInDate!=null and User_SignInDate!=''">
+                User_SignInDate=#{User_SignInDate,jdbcType=DATETIME},
+            </if>
+        </set>
+        WHERE User_ID=#{User_ID,jdbcType=CHAR}
+    </update>
+
+<!--    更新用户最近登录时间-->
+    <!--<update id="updateUserSignInDate">
+        update users u set u.User_SignInDate=#{} where u.userId=#{userid}
+    </update>-->
+
+    <select id="selectUserFollow" resultType="java.util.Map">
+        SELECT gx.yhgxid,gx.gxlx,gx.gxzm,gx.yhid,gx.bgzyhid FROM user_gx gx
+        where gxlx='1'
+        <if test="yhid!=null and yhid!=''">
+            and yhid=#{yhid,jdbcType=CHAR}
+        </if>
+        <if test="bgzyhid!=null and bgzyhid!=''">
+            and bgzyhid=#{bgzyhid,jdbcType=CHAR}
+        </if>
+    </select>
+
+    <!--更新用户关注信息-->
+    <update id="updateUserFollow" >
+        update user_gx
+        <set>
+            <if test="gxlx!=null and gxlx !=''">
+                gxlx=#{gxlx,jdbcType=VARCHAR},
+            </if>
+            <if test="gxzm!=null and gxzm!=''">
+                gxzm=#{gxzm,jdbcType=VARCHAR},
+            </if>
+        </set>
+        WHERE yhgxid=#{yhgxid,jdbcType=INTEGER}
+    </update>
+
+</mapper>
